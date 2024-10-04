@@ -23,14 +23,17 @@ fun MathGameScreen(level: String?, navController: NavController, mathViewModel: 
 
     val currentProblem by mathViewModel.currentProblem.collectAsState()
     var playerAnswer by remember { mutableStateOf("") }
-    var playerPoints by remember { mutableStateOf(0) }
     var feedbackMessage by remember { mutableStateOf("") }
-    var questions by remember { mutableStateOf(0) }
     var showNewProblem by remember { mutableStateOf(false) }
     var showMessage by remember { mutableStateOf(false) }
 
-    LaunchedEffect(level) {
-        mathViewModel.generateNewProblem(level)
+    LaunchedEffect(level)  {
+        when(level) {
+            "1" -> mathViewModel.generate1NewProblem()
+            "2" -> mathViewModel.generate2NewProblem()
+            "3" -> mathViewModel.generate3NewProblem()
+        }
+
     }
 
     Column(
@@ -55,12 +58,9 @@ fun MathGameScreen(level: String?, navController: NavController, mathViewModel: 
         Button(onClick = {
             val isCorrect = mathViewModel.checkAnswer(playerAnswer)
             if (isCorrect){
-                playerPoints += 1
-                questions += 1
                 feedbackMessage= "Vastaus oikein"
             } else {
                 feedbackMessage= "Vastaus on väärin :("
-                questions += 1
             }
             showNewProblem = true
         }) {
@@ -73,32 +73,37 @@ fun MathGameScreen(level: String?, navController: NavController, mathViewModel: 
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        Text(text = "Pisteesi: $playerPoints", style = MaterialTheme.typography.headlineMedium)
+        Text(text = "Pisteesi: ${mathViewModel.getScore()}", style = MaterialTheme.typography.headlineMedium)
 
         Spacer(modifier = Modifier.height(40.dp))
 
         Button(onClick = {
           navController.navigate("main")
+          mathViewModel.resetGame()
         }) { Text("Palaa valikkoon") }
     }
 
-    if (showNewProblem && questions < 10) {
+    if (showNewProblem && mathViewModel.getQuestionCount() < 10) {
         LaunchedEffect(Unit) {
             delay(2000)
-            mathViewModel.generateNewProblem(level)
+            when(level) {
+                "1" -> mathViewModel.generate1NewProblem()
+                "2" -> mathViewModel.generate2NewProblem()
+                "3" -> mathViewModel.generate3NewProblem()
+            }
             playerAnswer= ""
             feedbackMessage= ""
             showNewProblem= false
         }
     }
-    if (questions >= 10) {
+    if (mathViewModel.getQuestionCount() >= 10) {
         showMessage = true
     }
        if(showMessage)
        AlertDialog(
            onDismissRequest = {showMessage = false},
            title = { Text("Taso suoritettu") },
-           text = { Text("Olen suorittanut tämän tason sait pisteitä $playerPoints/10 pistettä") },
+           text = { Text("Olen suorittanut tämän tason sait pisteitä ${mathViewModel.getScore()}/10 pistettä") },
            confirmButton = {
                Button(onClick = {
                    showMessage = false
