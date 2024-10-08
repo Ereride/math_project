@@ -1,5 +1,6 @@
 package com.example.mathapp.view
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -9,9 +10,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.mathapp.R
 import com.example.mathapp.ui.theme.CustomButton // Käytä mukautettua painiketta
 import com.example.mathapp.viewmodel.ApiViewModel
 import com.example.mathapp.viewmodel.ScoreViewModel
@@ -51,10 +55,11 @@ fun MainScreen(
         )
 
         if (hasError) {
-            CustomButton(text = "Fetch new trivia", onClick = { apiViewModel.fetchRandomTrivia()}
-            )
+            Spacer(modifier = Modifier.height(16.dp))
+            CustomButton(text = "Fetch new trivia", onClick = { apiViewModel.fetchRandomTrivia() })
+        } else {
+            Spacer(modifier = Modifier.height(16.dp))
         }
-
 
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -69,5 +74,18 @@ fun MainScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
+    }
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        val image = painterResource(R.drawable.spider)
+        Image(
+            painter = image,
+            contentDescription = null,
+            modifier = Modifier
+                .size(200.dp)
+                .align(Alignment.BottomStart)
+                .padding(start = 50.dp)
+        )
     }
 }

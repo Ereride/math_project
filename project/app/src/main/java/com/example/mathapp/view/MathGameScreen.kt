@@ -1,6 +1,9 @@
 package com.example.mathapp.view
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -9,15 +12,22 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.mathapp.R
 import com.example.mathapp.ui.theme.CustomButton
 import com.example.mathapp.ui.theme.CustomText
 import com.example.mathapp.ui.theme.TextStyleLevel
 import com.example.mathapp.viewmodel.MathViewModel
 import com.example.mathapp.viewmodel.ScoreViewModel
 import kotlinx.coroutines.delay
+
 @Composable
 fun MathGameScreen(
     level: String?,
@@ -31,52 +41,70 @@ fun MathGameScreen(
     var showNewProblem by remember { mutableStateOf(false) }
     var showMessage by remember { mutableStateOf(false) }
 
+    val focusRequester = remember { FocusRequester() }
+
     LaunchedEffect(key1 = level) {
         if (level != null) {
             mathViewModel.startNewLevel() // Call startNewLevel instead of resetGame
             generateNewProblem(level, mathViewModel)
+            focusRequester.requestFocus()
         }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(top = 40.dp,start = 16.dp, end = 16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+    Box(
+        modifier = Modifier.fillMaxSize()
     ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 40.dp,start = 16.dp, end = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
 
-        CustomText(text = currentProblem, styleLevel = TextStyleLevel.SUBHEADLINE)
+            CustomText(text = currentProblem, styleLevel = TextStyleLevel.SUBHEADLINE)
 
-        Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
-        TextField(
-            value = playerAnswer,
-            onValueChange = { playerAnswer = it },
+            TextField(
+                value = playerAnswer,
+                onValueChange = { playerAnswer = it },
+                modifier = Modifier.focusRequester(focusRequester),
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            CustomButton(text = "Check answer",onClick = {
+                if (playerAnswer.isNotEmpty()) {
+                    val isCorrect = mathViewModel.checkAnswer(playerAnswer)
+                    feedbackMessage = if (isCorrect) "Correct!" else "That was wrong..."
+                    showNewProblem = true
+                } else {
+                    feedbackMessage = "Give answer"
+                }
+            })
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            CustomText(text = feedbackMessage, styleLevel = TextStyleLevel.SUBHEADLINE)
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            CustomButton(text = "Back to main", onClick = {
+                navController.navigate("main")
+                mathViewModel.resetGame()
+            })
+        }
+
+        val image = painterResource(R.drawable.__cute_ghost_with_pencil_design)
+        Image(
+            painter = image,
+            contentDescription = null,
+            modifier = Modifier
+                .size(200.dp)
+                .align(Alignment.BottomEnd) // Käytä tätä, ei vain vaaka- tai pystysuuntaista kohdistusta
+                .padding(start = 20.dp, bottom = 20.dp) // Lisää halutessasi padding
         )
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        CustomButton(text = "Check answer",onClick = {
-            if (playerAnswer.isNotEmpty()) {
-                val isCorrect = mathViewModel.checkAnswer(playerAnswer)
-                feedbackMessage = if (isCorrect) "Correct!" else "That was wrong..."
-                showNewProblem = true
-            } else {
-                feedbackMessage = "Give answer"
-            }
-        })
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        CustomText(text = feedbackMessage, styleLevel = TextStyleLevel.SUBHEADLINE)
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        CustomButton(text = "Back to main", onClick = {
-            navController.navigate("main")
-            mathViewModel.resetGame()
-        })
     }
 
     if (showNewProblem && mathViewModel.getQuestionCount() < 10) {
@@ -108,6 +136,7 @@ fun MathGameScreen(
             }
         )
     }
+
 }
 
 private fun generateNewProblem(level: String?, mathViewModel: MathViewModel) {

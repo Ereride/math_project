@@ -1,5 +1,6 @@
 package com.example.mathapp.view
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
@@ -17,6 +18,8 @@ import com.example.mathapp.viewmodel.MathViewModel
 import com.example.mathapp.viewmodel.ScoreViewModel
 import androidx.compose.runtime.livedata.observeAsState // Ensure correct import
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import com.example.mathapp.R
 import com.example.mathapp.ui.theme.CustomButton
 import com.example.mathapp.ui.theme.CustomText
 import com.example.mathapp.ui.theme.TextStyleLevel
@@ -37,9 +40,9 @@ fun ScoreScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(40.dp),
+            .padding(bottom = 80.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.Bottom,
 
     ) {
 
@@ -79,4 +82,19 @@ fun ScoreScreen(
         onClick = { scoreViewModel.deleteScores() },
         Modifier.padding(top = 20.dp)
     )
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        val image = painterResource(R.drawable.claws)
+        Image(
+            painter = image,
+            contentDescription = null,
+            modifier = Modifier
+                .size(340.dp)
+                .align(Alignment.TopEnd)
+                .padding(top = 40.dp)
+        )
+    }
+
+
 }
