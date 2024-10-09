@@ -74,7 +74,7 @@ fun MathGameScreen(
 
             Spacer(modifier = Modifier.height(24.dp)) // Space between input and check button
 
-            CustomButton(text = "Check answer", onClick = {
+            CustomButton(text = stringResource(R.string.check_answer), onClick = {
                 // Validate answer input
                 when {
                     playerAnswer.isEmpty() -> {
@@ -103,9 +103,9 @@ fun MathGameScreen(
 
             Spacer(modifier = Modifier.height(24.dp)) // Space before the back button
 
-            CustomButton(text = "Back to main", onClick = {
+            CustomButton(text = stringResource(R.string.back_to_main), onClick = {
                 navController.navigate("main") // Navigate back to the main screen
-                mathViewModel.resetGame() // Reset the game in ViewModel
+                mathViewModel.resetGame() // Reset the game state in the MathViewModel
             })
         }
 
@@ -153,10 +153,18 @@ fun MathGameScreen(
         // Show an AlertDialog for level completion
         AlertDialog(
             onDismissRequest = { showMessage = false }, // Dismiss dialog on request
-            title = { Text("Level Completed") },
-            text = { Text("You have completed this level. You got ${mathViewModel.getScore()}/10 answers correct. \n\n$feedbackMessage") }, // Dialog content
+            title = { Text(stringResource(R.string.level_completed_title)) },
+            text = {
+                Text(
+                    text = stringResource(
+                        R.string.level_completed_message,
+                        mathViewModel.getScore(),
+                        feedbackMessage
+                    )
+                )
+            }, // Dialog content
             confirmButton = {
-                CustomButton(text = "Back to main", onClick = {
+                CustomButton(text = stringResource(R.string.back_to_main), onClick = {
                     showMessage = false // Close the dialog
                     scoreViewModel.insertScore(scoreToSave, level?.toInt() ?: 1) // Save score and level
                     navController.navigate("main") // Navigate back to the main screen

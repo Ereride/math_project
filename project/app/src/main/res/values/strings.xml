@@ -8,4 +8,16 @@
     <string name="ghost_message">With a total score of %1$d/200, you are a GHOST - Silent, mysterious, and nearly flawless like a ghost. Almost perfect!</string>
     <string name="pumpkin_master_message">With a total score of %1$d/200, you are the PUMPKIN MASTER - A perfect performance! The crown of glory belongs to you!</string>
     <string name="unknown_score_message">Unknown score</string>
+    <string name="math_challenge">Math Challenge</string>
+    <string name="level_1_instructions">Level 1:\nIn Level 1, you will be solving simple arithmetic problems involving addition, subtraction, and multiplication. The maximum numbers used in these operations will be up to 20. Your goal is to solve these problems as quickly as possible.</string>
+    <string name="level_2_instructions">Level 2:\nLevel 2 increases the challenge by incorporating more complex arithmetic operations, including multi-step problems. You will encounter addition and subtraction of three numbers, as well as area calculations using multiplication. The maximum numbers can go up to 30.</string>
+    <string name="level_3_instructions">Level 3:\nIn Level 3, you will tackle advanced problems such as solving equations, calculating areas of triangles, and working with percentages. This level will require you to apply more mathematical concepts and strategies, with the maximum numbers being up to 10 for some operations and up to 200 for percentages.</string>
+    <string name="good_luck">Good luck!</string>
+    <string name="level_completed_title">Level Completed</string>
+    <string name="level_completed_message">You have completed this level. You got %1$d/10 answers correct. \n\n%s</string>
+    <string name="reset_points">Reset points</string>
+    <string name="level_text">Level %1$d</string>
+    <string name="score_text">%1$d points</string>
+    <string name="top_scores_title">Top Scores</string>
+    <string name="check_answer">Check answer</string>
 </resources>

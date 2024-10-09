@@ -37,7 +37,11 @@ fun ScoreScreen(
         verticalArrangement = Arrangement.Bottom, // Arrange content towards the bottom
     ) {
 
-        CustomText(text = "Top Scores", styleLevel = TextStyleLevel.HEADLINE) // Display title
+        CustomText(
+            text = stringResource(R.string.top_scores_title), // Use the string resource for the title
+            styleLevel = TextStyleLevel.HEADLINE
+        )
+
 
         // Group scores by level
         val groupedScores = topScores.groupBy { it.level }
@@ -48,7 +52,7 @@ fun ScoreScreen(
 
             // Display the level title
             CustomText(
-                text = "Level $level",
+                text = stringResource(R.string.level_text, level.toInt()),
                 styleLevel = TextStyleLevel.SUBHEADLINE,
             )
 
@@ -58,21 +62,24 @@ fun ScoreScreen(
                 .take(3) // Take only the top 3 scores
                 .forEach { score ->
                     // Display each top score
-                    CustomText(text = "${score.points} points", styleLevel = TextStyleLevel.BODY)
+                    CustomText(
+                        text = stringResource(R.string.score_text, score.points), // Use the string resource with formatting
+                        styleLevel = TextStyleLevel.BODY,
+                    )
                 }
         }
 
         // Button to navigate back to the main screen
         CustomButton(text = stringResource(R.string.back_to_main), onClick = {
             navController.navigate("main") // Navigate back to the main screen
-            mathViewModel.resetGame() // Reset the game state in the MathViewModel
         })
     }
 
     // Button to reset all scores
-    CustomButton(text = "Reset points",
+    CustomButton(
+        text = stringResource(R.string.reset_points), // Use the string resource here
         onClick = { scoreViewModel.deleteScores() }, // Calls the method to delete scores
-        Modifier.padding(top = 20.dp)
+        modifier = Modifier.padding(top = 20.dp)
     )
 
     // Box layout to overlay an image on the score screen

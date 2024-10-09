@@ -21,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -51,7 +52,7 @@ fun MainScreen(
         ) {
             // Custom Text for title
             CustomText(
-                text = "Math Challenge",
+                text = stringResource(id = R.string.math_challenge),
                 styleLevel = TextStyleLevel.HEADLINE // Title style
             )
             Spacer(modifier = Modifier.height(16.dp)) // Space below the title
@@ -104,26 +105,14 @@ fun MainScreen(
                 title = { Text("Level Guide") }, // Dialog title
                 text = {
                     Text(
-                        "Level 1:\n" +
-                                "In Level 1, you will be solving simple arithmetic problems involving addition, subtraction, and multiplication. " +
-                                "The maximum numbers used in these operations will be up to 20. " +
-                                "Your goal is to solve these problems as quickly as possible.\n\n" +
-
-                                "Level 2:\n" +
-                                "Level 2 increases the challenge by incorporating more complex arithmetic operations, " +
-                                "including multi-step problems. You will encounter addition and subtraction of three numbers, " +
-                                "as well as area calculations using multiplication. The maximum numbers can go up to 30.\n\n" +
-
-                                "Level 3:\n" +
-                                "In Level 3, you will tackle advanced problems such as solving equations, calculating areas of triangles, " +
-                                "and working with percentages. This level will require you to apply more mathematical concepts " +
-                                "and strategies, with the maximum numbers being up to 10 for some operations and up to 200 for percentages.\n\n" +
-
-                                "Good luck!" // Instructions for each level
+                        text = stringResource(id = R.string.level_1_instructions) + "\n\n" +
+                                stringResource(id = R.string.level_2_instructions) + "\n\n" +
+                                stringResource(id = R.string.level_3_instructions) + "\n\n" +
+                                stringResource(id = R.string.good_luck) // Instructions for each level
                     )
                 },
                 confirmButton = {
-                    CustomButton(text = "Back to main", onClick = {
+                    CustomButton(text = stringResource(R.string.back_to_main), onClick = {
                         showDialog.value = false // Close the dialog
                         navController.navigate("main") // Navigate back to the main screen
                     })
