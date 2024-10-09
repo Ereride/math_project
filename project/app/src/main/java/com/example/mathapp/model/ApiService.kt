@@ -2,10 +2,10 @@ package com.example.mathapp.model
 
 import retrofit2.Call
 import retrofit2.http.GET
-import retrofit2.http.Path
+
 
 interface ApiService {
-    @GET("random/trivia?json") // Updated endpoint
+    @GET("random/trivia?json")
     fun getRandomTrivia(): Call<NumberFact>
 
     companion object {

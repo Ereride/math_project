@@ -1,13 +1,8 @@
 package com.example.mathapp.view
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,9 +11,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.mathapp.viewmodel.MathViewModel
 import com.example.mathapp.viewmodel.ScoreViewModel
-import androidx.compose.runtime.livedata.observeAsState // Ensure correct import
-import androidx.compose.ui.graphics.Color
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import com.example.mathapp.R
 import com.example.mathapp.ui.theme.CustomButton
 import com.example.mathapp.ui.theme.CustomText
@@ -26,62 +21,61 @@ import com.example.mathapp.ui.theme.TextStyleLevel
 
 @Composable
 fun ScoreScreen(
-    navController: NavController,
-    mathViewModel: MathViewModel = viewModel(),
-    scoreViewModel: ScoreViewModel = viewModel()
+    navController: NavController, // Navigation controller for transitioning screens
+    mathViewModel: MathViewModel = viewModel(), // ViewModel for math logic
+    scoreViewModel: ScoreViewModel = viewModel() // ViewModel for score management
 ) {
-    // Collecting scores as state
-    val totalScore = mathViewModel.getTotalScore()
-    val correctAnswers = mathViewModel.getScore()
 
-    // Fetch top scores
-    val topScores by scoreViewModel.topScores.observeAsState(emptyList()) // Observe top scores directly
+    // Observe the top scores from the ScoreViewModel
+    val topScores by scoreViewModel.topScores.observeAsState(emptyList())
 
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(bottom = 80.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Bottom,
-
+            .fillMaxSize() // Fills the entire available space
+            .padding(bottom = 80.dp), // Adds padding to the bottom
+        horizontalAlignment = Alignment.CenterHorizontally, // Center content horizontally
+        verticalArrangement = Arrangement.Bottom, // Arrange content towards the bottom
     ) {
 
-        // Display top scores
-        CustomText(text = "Top Scores", styleLevel = TextStyleLevel.HEADLINE)
+        CustomText(text = "Top Scores", styleLevel = TextStyleLevel.HEADLINE) // Display title
 
-        // Ryhmitellään pisteet tason mukaan
+        // Group scores by level
         val groupedScores = topScores.groupBy { it.level }
 
-        // Käydään jokainen taso läpi
+        // Iterate through each group of scores
         groupedScores.forEach { (level, scores) ->
-            Spacer(modifier = Modifier.height(16.dp))  // Väli jokaisen tason välillä
+            Spacer(modifier = Modifier.height(16.dp)) // Add space between levels
 
-            // Näytetään tason otsikko
+            // Display the level title
             CustomText(
                 text = "Level $level",
                 styleLevel = TextStyleLevel.SUBHEADLINE,
             )
 
-            // Näytetään kolmen parhaan pisteet
+            // Sort scores for the current level and take the top 3
             scores
-                .sortedByDescending { it.points }
-                .take(3)
+                .sortedByDescending { it.points } // Sort scores in descending order based on points
+                .take(3) // Take only the top 3 scores
                 .forEach { score ->
-                CustomText(text = "${score.points} points", styleLevel = TextStyleLevel.BODY)
-            }
-
+                    // Display each top score
+                    CustomText(text = "${score.points} points", styleLevel = TextStyleLevel.BODY)
+                }
         }
-        CustomButton(text = "Back to main", onClick = {
-            navController.navigate("main")
-            mathViewModel.resetGame()
-        })
 
+        // Button to navigate back to the main screen
+        CustomButton(text = stringResource(R.string.back_to_main), onClick = {
+            navController.navigate("main") // Navigate back to the main screen
+            mathViewModel.resetGame() // Reset the game state in the MathViewModel
+        })
     }
 
+    // Button to reset all scores
     CustomButton(text = "Reset points",
-        onClick = { scoreViewModel.deleteScores() },
+        onClick = { scoreViewModel.deleteScores() }, // Calls the method to delete scores
         Modifier.padding(top = 20.dp)
     )
+
+    // Box layout to overlay an image on the score screen
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -95,6 +89,4 @@ fun ScoreScreen(
                 .padding(top = 40.dp)
         )
     }
-
-
 }

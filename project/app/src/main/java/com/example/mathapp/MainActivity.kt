@@ -28,66 +28,78 @@ import com.example.mathapp.view.MathGameScreen
 import com.example.mathapp.view.ScoreScreen
 import com.example.mathapp.viewmodel.MathViewModel
 
+// Main activity for the math application, extending ComponentActivity
 class MainActivity : ComponentActivity() {
+    // Called when the activity is created
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Enables edge-to-edge display for a full-screen experience
         enableEdgeToEdge()
+
+        // Sets the content of the activity using Jetpack Compose
         setContent {
+            // Apply the custom theme for the app
             MathAppTheme {
+                // Create a NavController for managing navigation within the app
                 val navController = rememberNavController()
+                // Create a ViewModel instance for the math game
                 val mathViewModel: MathViewModel = viewModel()
 
-                // Varmistetaan, että MyTestScreen näkyy
+                // Create a Scaffold to provide basic Material Design layout structure
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    // Taustakuva, jos haluat sen
+                    // Background image with overlay to provide a visual backdrop
                     BackgroundImageWithOverlay(modifier = Modifier.fillMaxSize().zIndex(-1f))
-                        NavHost(
-                            navController,
-                            startDestination = "main",
-                            Modifier.fillMaxSize()
-                        ) {
-                            composable("main") { MainScreen(navController) }
-                            composable("game/{level}") { navBackStackEntry ->
-                                val level = navBackStackEntry.arguments?.getString("level")
-                                MathGameScreen(level, navController, mathViewModel)
-                            }
-                            composable("score") { ScoreScreen(navController, mathViewModel) }
+
+                    // Navigation host for managing different screens in the app
+                    NavHost(
+                        navController,
+                        startDestination = "main", // Start with the main screen
+                        Modifier.fillMaxSize() // Fill the entire available space
+                    ) {
+                        // Define the main screen of the app
+                        composable("main") { MainScreen(navController) }
+
+                        // Define the game screen, passing the level as an argument
+                        composable("game/{level}") { navBackStackEntry ->
+                            val level = navBackStackEntry.arguments?.getString("level") // Get level argument from nav back stack
+                            MathGameScreen(level, navController, mathViewModel) // Call the game screen
                         }
+
+                        // Define the score screen
+                        composable("score") { ScoreScreen(navController, mathViewModel) }
                     }
                 }
             }
         }
     }
+}
 
-
+// Composable function to display a background image with a gradient overlay
 @Composable
 fun BackgroundImageWithOverlay(modifier: Modifier) {
     Box(modifier = modifier) {
-        // Taustakuva
-        val image = painterResource(R.drawable.witchcraft_40) // Tarkista kuva
+        // Load the background image resource
+        val image = painterResource(R.drawable.witchcraft_40) // Ensure the image resource exists
         Image(
-            painter = image,
-            contentDescription = null,
-            modifier = Modifier.fillMaxSize(), // Täytä koko Box
-            contentScale = ContentScale.Crop // Skaalaa kuva oikein
+            painter = image, // Set the image painter
+            contentDescription = null, // No content description for decorative images
+            modifier = Modifier.fillMaxSize(), // Image fills the entire Box
+            contentScale = ContentScale.Crop // Crop the image to fill the Box while maintaining aspect ratio
         )
 
-        // Gradienttitaustaväri
+        // Overlay with a radial gradient background
         Box(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxSize() // Fill the entire Box
                 .background(
                     brush = Brush.radialGradient(
                         colors = listOf(
-                            Color.Transparent, // Reuna (0%)
-                            Color(0x80080808),  // Keskikohta (50% läpinäkyvyys)
-
+                            Color.Transparent, // Transparent at the edges
+                            Color(0x80080808)  // Semi-transparent black in the center
                         ),
-                        radius = 1000f // Gradientin pituus
+                        radius = 1000f // The radius of the gradient
                     )
                 )
         )
     }
 }
-
-

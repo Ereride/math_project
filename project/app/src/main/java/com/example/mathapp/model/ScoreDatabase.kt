@@ -7,8 +7,11 @@ import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
+// Database class for the Room database, managing the ScoreBoard entity.
 @Database(entities = [ScoreBoard::class], version = 2)
 abstract class AppDatabase : RoomDatabase() {
+
+    // Abstract function to get the ScoreDAO for accessing the score_board table.
     abstract fun scoreDao(): ScoreDAO
 
     companion object {
@@ -19,7 +22,7 @@ abstract class AppDatabase : RoomDatabase() {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     AppDatabase::class.java,
-                    "mathapp_database"
+                    "mathapp_database" // Name of the database.
                 )
                     .addMigrations(MIGRATION_1_2)
                     .build()

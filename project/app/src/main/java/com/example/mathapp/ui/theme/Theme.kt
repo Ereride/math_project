@@ -49,7 +49,6 @@ private val LightColorScheme = lightColorScheme(
 @Composable
 fun MathAppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
@@ -79,7 +78,7 @@ fun CustomButton(
         onClick = onClick,
         shape = RoundedCornerShape(4.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFFc95e16), // Määritetty aiemmin teemassa
+            containerColor = Color(0xFFc95e16),
             contentColor = Color.White
         ),
         modifier = modifier
@@ -89,9 +88,9 @@ fun CustomButton(
     ) {
         Text(
             text = text,
-            fontSize = 20.sp, // Määritetään tekstin koko
+            fontSize = 20.sp,
             textAlign = TextAlign.Center
-        ) // Keskittää tekstin
+        )
     }
 }
 

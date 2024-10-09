@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">mathApp</string>
+    <string name="back_to_main">Back to Main</string>
+    <string name="zombie_message">With a total score of %1$d/200, you are a ZOMBIE - You’re a slow, shambling zombie. The brains aren’t quite working yet, but maybe next time you’ll wake up a bit sharper!</string>
+    <string name="witch_message">With a total score of %1$d/200, you are a WITCH - The potion was almost right, but not quite. Your witch skills need some refining!</string>
+    <string name="vampire_message">With a total score of %1$d/200, you are a VAMPIRE - You’re a cunning and dangerous vampire. You’ve got talent but not yet a true nocturnal master!</string>
+    <string name="werewolf_message">With a total score of %1$d/200, you are a WEREWOLF - Strong and fast like a werewolf under the full moon, but your full potential is yet to be unleashed!</string>
+    <string name="ghost_message">With a total score of %1$d/200, you are a GHOST - Silent, mysterious, and nearly flawless like a ghost. Almost perfect!</string>
+    <string name="pumpkin_master_message">With a total score of %1$d/200, you are the PUMPKIN MASTER - A perfect performance! The crown of glory belongs to you!</string>
+    <string name="unknown_score_message">Unknown score</string>
 </resources>
