@@ -66,7 +66,7 @@ class MainActivity : ComponentActivity() {
                         }
 
                         // Define the score screen
-                        composable("score") { ScoreScreen(navController, mathViewModel) }
+                        composable("score") { ScoreScreen(navController) }
                     }
                 }
             }

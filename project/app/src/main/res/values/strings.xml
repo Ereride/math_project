@@ -1,6 +1,16 @@
 <resources>
     <string name="app_name">mathApp</string>
     <string name="back_to_main">Back to Main</string>
+    <string name="try_again">Try again</string>
+    <string name="level1">Level 1</string>
+    <string name="level2">Level 2</string>
+    <string name="level3">Level 3</string>
+    <string name="score">Score</string>
+    <string name="fetch_new_trivia">Fetch new trivia</string>
+    <string name="invalid_level">Invalid level: %1$d. Please choose a valid level.</string>
+    <string name="error">Error</string>
+    <string name="failed_fetch_trivia">Oops, failed to retrieve trivia</string>
+    <string name="level_guide">Level Guide</string>
     <string name="zombie_message">With a total score of %1$d/200, you are a ZOMBIE - You’re a slow, shambling zombie. The brains aren’t quite working yet, but maybe next time you’ll wake up a bit sharper!</string>
     <string name="witch_message">With a total score of %1$d/200, you are a WITCH - The potion was almost right, but not quite. Your witch skills need some refining!</string>
     <string name="vampire_message">With a total score of %1$d/200, you are a VAMPIRE - You’re a cunning and dangerous vampire. You’ve got talent but not yet a true nocturnal master!</string>
@@ -8,6 +18,11 @@
     <string name="ghost_message">With a total score of %1$d/200, you are a GHOST - Silent, mysterious, and nearly flawless like a ghost. Almost perfect!</string>
     <string name="pumpkin_master_message">With a total score of %1$d/200, you are the PUMPKIN MASTER - A perfect performance! The crown of glory belongs to you!</string>
     <string name="unknown_score_message">Unknown score</string>
+    <string name="please_provide_answer">Please provide an answer.</string>
+    <string name="answer_must_be_numeric">Your answer must be a number.</string>
+    <string name="correct_answer">Correct!</string>
+    <string name="wrong_answer">That was wrong...</string>
+    <string name="error_checking_answer">Error checking answer. Please try again.</string>
     <string name="math_challenge">Math Challenge</string>
     <string name="level_1_instructions">Level 1:\nIn Level 1, you will be solving simple arithmetic problems involving addition, subtraction, and multiplication. The maximum numbers used in these operations will be up to 20. Your goal is to solve these problems as quickly as possible.</string>
     <string name="level_2_instructions">Level 2:\nLevel 2 increases the challenge by incorporating more complex arithmetic operations, including multi-step problems. You will encounter addition and subtraction of three numbers, as well as area calculations using multiplication. The maximum numbers can go up to 30.</string>

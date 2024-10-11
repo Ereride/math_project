@@ -22,7 +22,6 @@ import com.example.mathapp.ui.theme.TextStyleLevel
 @Composable
 fun ScoreScreen(
     navController: NavController, // Navigation controller for transitioning screens
-    mathViewModel: MathViewModel = viewModel(), // ViewModel for math logic
     scoreViewModel: ScoreViewModel = viewModel() // ViewModel for score management
 ) {
 

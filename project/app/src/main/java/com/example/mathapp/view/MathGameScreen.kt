@@ -1,5 +1,6 @@
 package com.example.mathapp.view
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -41,14 +42,34 @@ fun MathGameScreen(
     var showMessage by remember { mutableStateOf(false) } // State to show completion message
 
     val focusRequester = remember { FocusRequester() } // Requester to handle focus on the text field
+    var showInvalidLevelAlert by remember { mutableStateOf(false) }
 
     // Effect to start a new level and generate a problem
     LaunchedEffect(key1 = level) {
         if (level != null) {
             mathViewModel.startNewLevel() // Start the new level
-            generateNewProblem(level, mathViewModel) // Generate a new math problem based on level
-            focusRequester.requestFocus() // Request focus for the text field
+            try {
+                generateNewProblem(level, mathViewModel)
+                focusRequester.requestFocus() // Request focus for the text field
+            } catch (e: IllegalArgumentException) {
+                // Handle the invalid level case by showing the alert
+                showInvalidLevelAlert = true
+            }
         }
+    }
+
+    if (showInvalidLevelAlert) {
+        AlertDialog(
+            onDismissRequest = { showInvalidLevelAlert = false },
+            title = { Text(stringResource(R.string.error)) },
+            text = { Text(stringResource(R.string.invalid_level))},
+            confirmButton = {
+                CustomButton(text = stringResource(R.string.try_again), onClick = {
+                    showInvalidLevelAlert = false
+                    mathViewModel.startNewLevel()
+                })
+            }
+        )
     }
 
     Box(
@@ -74,23 +95,28 @@ fun MathGameScreen(
 
             Spacer(modifier = Modifier.height(24.dp)) // Space between input and check button
 
+            val provideAnswerMessage = stringResource(R.string.please_provide_answer)
+            val answerMustBeNumericMessage = stringResource(R.string.answer_must_be_numeric)
+            val errorCheckingAnswerMessage = stringResource(R.string.error_checking_answer)
+            val correctAnswerMessage = stringResource(R.string.correct_answer)
+            val wrongAnswerMessage = stringResource(R.string.wrong_answer)
+
             CustomButton(text = stringResource(R.string.check_answer), onClick = {
                 // Validate answer input
                 when {
                     playerAnswer.isEmpty() -> {
-                        feedbackMessage = "Please provide an answer." // Prompt to give an answer if empty
+                        feedbackMessage = provideAnswerMessage // Prompt to give an answer if empty
                     }
                     !isNumeric(playerAnswer) -> {
-                        feedbackMessage = "Your answer must be a number." // Ensure the answer is numeric
+                        feedbackMessage = answerMustBeNumericMessage // Ensure the answer is numeric
                     }
                     else -> {
                         // Attempt to check the answer and handle any potential errors
                         try {
                             val isCorrect = mathViewModel.checkAnswer(playerAnswer) // Check if the answer is correct
-                            feedbackMessage = if (isCorrect) "Correct!" else "That was wrong..." // Set feedback message
-                            showNewProblem = true // Show new problem after checking
+                            feedbackMessage = if (isCorrect) correctAnswerMessage else wrongAnswerMessage
                         } catch (e: Exception) {
-                            feedbackMessage = "Error checking answer. Please try again." // Handle error during answer check
+                            feedbackMessage = errorCheckingAnswerMessage// Handle error during answer check
                             // Log the error if needed
                         }
                     }
@@ -183,7 +209,8 @@ private fun generateNewProblem(level: String?, mathViewModel: MathViewModel) {
         "3" -> mathViewModel.generate3NewProblem() // Generate problem for level 3
         else -> {
             // Handle unexpected level value
-            throw IllegalArgumentException("Invalid level: $level") // Optional: throw an exception for debugging
+            Log.w("MathGameScreen", "Invalid level: $level. Falling back to level 1.")
+            mathViewModel.generate1NewProblem()
         }
     }
 }

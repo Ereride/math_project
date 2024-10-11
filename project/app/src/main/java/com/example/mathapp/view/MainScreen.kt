@@ -66,7 +66,7 @@ fun MainScreen(
             // Show button to fetch new trivia if there was an error
             if (hasError) {
                 Spacer(modifier = Modifier.height(16.dp))
-                CustomButton(text = "Fetch new trivia", onClick = { apiViewModel.fetchRandomTrivia() })
+                CustomButton(text = stringResource(R.string.fetch_new_trivia), onClick = { apiViewModel.fetchRandomTrivia() })
             } else {
                 Spacer(modifier = Modifier.height(16.dp)) // Space if no error
             }
@@ -74,13 +74,13 @@ fun MainScreen(
             Spacer(modifier = Modifier.height(24.dp)) // Space before level buttons
 
             // Custom buttons for game levels
-            CustomButton(text = "Level 1", onClick = { navController.navigate("game/1") }) // Navigate to level 1
+            CustomButton(text = stringResource(R.string.level1), onClick = { navController.navigate("game/1") }) // Navigate to level 1
             Spacer(modifier = Modifier.height(8.dp)) // Space between buttons
-            CustomButton(text = "Level 2", onClick = { navController.navigate("game/2") }) // Navigate to level 2
+            CustomButton(text = stringResource(R.string.level2), onClick = { navController.navigate("game/2") }) // Navigate to level 2
             Spacer(modifier = Modifier.height(8.dp)) // Space between buttons
-            CustomButton(text = "Level 3", onClick = { navController.navigate("game/3") }) // Navigate to level 3
+            CustomButton(text = stringResource(R.string.level3), onClick = { navController.navigate("game/3") }) // Navigate to level 3
             Spacer(modifier = Modifier.height(8.dp)) // Space between buttons
-            CustomButton(text = "Score", onClick = { navController.navigate("score") }) // Navigate to score screen
+            CustomButton(text = stringResource(R.string.score), onClick = { navController.navigate("score") }) // Navigate to score screen
 
             Spacer(modifier = Modifier.height(24.dp)) // Space below level buttons
         }
@@ -102,7 +102,7 @@ fun MainScreen(
         if (showDialog.value) {
             AlertDialog(
                 onDismissRequest = { showDialog.value = false }, // Dismiss the dialog when clicked outside
-                title = { Text("Level Guide") }, // Dialog title
+                title = { Text( stringResource(R.string.level_guide)) }, // Dialog title
                 text = {
                     Text(
                         text = stringResource(id = R.string.level_1_instructions) + "\n\n" +
