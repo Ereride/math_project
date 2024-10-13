@@ -12,7 +12,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -34,14 +33,13 @@ fun MathGameScreen(
     mathViewModel: MathViewModel = viewModel(), // ViewModel for math logic
     scoreViewModel: ScoreViewModel = viewModel() // ViewModel for score management
 ) {
-    // Collect current problem state from the ViewModel
     val currentProblem by mathViewModel.currentProblem.collectAsState()
-    var playerAnswer by remember { mutableStateOf("") } // Holds player's answer
-    var feedbackMessage by remember { mutableStateOf("") } // Message for feedback
-    var showNewProblem by remember { mutableStateOf(false) } // State to show new problem
-    var showMessage by remember { mutableStateOf(false) } // State to show completion message
+    var playerAnswer by remember { mutableStateOf("") }
+    var feedbackMessage by remember { mutableStateOf("") }
+    var showNewProblem by remember { mutableStateOf(false) }
+    var showMessage by remember { mutableStateOf(false) }
 
-    val focusRequester = remember { FocusRequester() } // Requester to handle focus on the text field
+    val focusRequester = remember { FocusRequester() }
     var showInvalidLevelAlert by remember { mutableStateOf(false) }
 
     // Effect to start a new level and generate a problem
@@ -49,15 +47,17 @@ fun MathGameScreen(
         if (level != null) {
             mathViewModel.startNewLevel() // Start the new level
             try {
+                Log.d("MathGameScreen", "Starting new level: $level")
                 generateNewProblem(level, mathViewModel)
                 focusRequester.requestFocus() // Request focus for the text field
             } catch (e: IllegalArgumentException) {
-                // Handle the invalid level case by showing the alert
                 showInvalidLevelAlert = true
+                Log.e("MathGameScreen", "Invalid level: $level", e)
             }
         }
     }
 
+    // Alert dialog for invalid level input
     if (showInvalidLevelAlert) {
         AlertDialog(
             onDismissRequest = { showInvalidLevelAlert = false },
@@ -73,100 +73,119 @@ fun MathGameScreen(
     }
 
     Box(
-        modifier = Modifier.fillMaxSize() // Full size for the Box layout
+        modifier = Modifier.fillMaxSize()
     ) {
         Column(
             modifier = Modifier
-                .fillMaxSize() // Fill the available size
-                .padding(top = 40.dp, start = 16.dp, end = 16.dp), // Padding for the column
-            horizontalAlignment = Alignment.CenterHorizontally, // Center content horizontally
-            verticalArrangement = Arrangement.Center // Center content vertically
+                .fillMaxSize()
+                .padding(top = 40.dp, start = 16.dp, end = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            CustomText(text = currentProblem, styleLevel = TextStyleLevel.SUBHEADLINE) // Display the current problem
+            // Display the current math problem
+            CustomText(text = currentProblem, styleLevel = TextStyleLevel.SUBHEADLINE)
 
-            Spacer(modifier = Modifier.height(24.dp)) // Space between problem and answer input
+            Spacer(modifier = Modifier.height(24.dp))
 
+            // TextField for player's answer input
             TextField(
-                value = playerAnswer, // Bind player answer
-                onValueChange = { playerAnswer = it }, // Update player answer on change
-                modifier = Modifier.focusRequester(focusRequester), // Set focus requester
-                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number) // Numeric keyboard
+                value = playerAnswer,
+                onValueChange = { playerAnswer = it },
+                modifier = Modifier.focusRequester(focusRequester),
+                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
             )
 
-            Spacer(modifier = Modifier.height(24.dp)) // Space between input and check button
+            Spacer(modifier = Modifier.height(24.dp))
 
+            // Prepare messages for feedback
             val provideAnswerMessage = stringResource(R.string.please_provide_answer)
             val answerMustBeNumericMessage = stringResource(R.string.answer_must_be_numeric)
             val errorCheckingAnswerMessage = stringResource(R.string.error_checking_answer)
             val correctAnswerMessage = stringResource(R.string.correct_answer)
             val wrongAnswerMessage = stringResource(R.string.wrong_answer)
 
+            // Button to check the answer
             CustomButton(text = stringResource(R.string.check_answer), onClick = {
                 // Validate answer input
                 when {
                     playerAnswer.isEmpty() -> {
-                        feedbackMessage = provideAnswerMessage // Prompt to give an answer if empty
+                        feedbackMessage = provideAnswerMessage
+                        Log.d("MathGameScreen", "Player did not provide an answer")
                     }
                     !isNumeric(playerAnswer) -> {
-                        feedbackMessage = answerMustBeNumericMessage // Ensure the answer is numeric
+                        feedbackMessage = answerMustBeNumericMessage
+                        Log.d("MathGameScreen", "Player answer is not numeric: $playerAnswer")
                     }
                     else -> {
-                        // Attempt to check the answer and handle any potential errors
                         try {
-                            val isCorrect = mathViewModel.checkAnswer(playerAnswer) // Check if the answer is correct
+                            val isCorrect = mathViewModel.checkAnswer(playerAnswer)
                             feedbackMessage = if (isCorrect) correctAnswerMessage else wrongAnswerMessage
+                            Log.d("MathGameScreen", "Player answer: $playerAnswer, Correct? $isCorrect")
+                            val currentScore = mathViewModel.getTotalScore()
+                            Log.d("MathGameScreen", "Current score: $currentScore")
+                            showNewProblem = true
                         } catch (e: Exception) {
-                            feedbackMessage = errorCheckingAnswerMessage// Handle error during answer check
-                            // Log the error if needed
+                            feedbackMessage = errorCheckingAnswerMessage
+                            Log.e("MathGameScreen", "Error checking answer: ${e.message}", e)
                         }
                     }
                 }
             })
 
-            Spacer(modifier = Modifier.height(8.dp)) // Space between check button and feedback message
+            Spacer(modifier = Modifier.height(8.dp))
 
-            CustomText(text = feedbackMessage, styleLevel = TextStyleLevel.SUBHEADLINE) // Display feedback message
+            // Display feedback message to the player
+            CustomText(text = feedbackMessage, styleLevel = TextStyleLevel.SUBHEADLINE)
 
-            Spacer(modifier = Modifier.height(24.dp)) // Space before the back button
+            Spacer(modifier = Modifier.height(24.dp))
 
+            // Button to navigate back to the main screen
             CustomButton(text = stringResource(R.string.back_to_main), onClick = {
-                navController.navigate("main") // Navigate back to the main screen
-                mathViewModel.resetGame() // Reset the game state in the MathViewModel
+                navController.navigate("main")
+                mathViewModel.resetGame()
             })
         }
 
-        // Load and display an image at the bottom end
-        val image = painterResource(R.drawable.__cute_ghost_with_pencil_design) // Load the image resource
+        val image = painterResource(R.drawable.__cute_ghost_with_pencil_design)
         Image(
             painter = image,
-            contentDescription = null, // No content description
+            contentDescription = null,
             modifier = Modifier
-                .size(200.dp) // Set size for the image
-                .align(Alignment.BottomEnd) // Align image to the bottom end
-                .padding(start = 20.dp, bottom = 20.dp) // Padding for the image
+                .size(200.dp)
+                .align(Alignment.BottomEnd)
+                .padding(start = 20.dp, bottom = 20.dp)
         )
     }
 
-    // Show new problem after a delay if the question count is less than 10
+    // Generate a new problem after a short delay if conditions are met
     if (showNewProblem && mathViewModel.getQuestionCount() < 10) {
         LaunchedEffect(Unit) {
-            delay(2000) // Delay for 2 seconds
-            generateNewProblem(level, mathViewModel) // Generate a new problem
-            playerAnswer = "" // Clear the answer field
-            feedbackMessage = "" // Clear the feedback message
-            showNewProblem = false // Reset the showNewProblem flag
+            delay(1500)
+            generateNewProblem(level, mathViewModel)
+            playerAnswer = ""
+            feedbackMessage = ""
+            showNewProblem = false
         }
     }
 
-    // Check if the question count has reached 10 to show the completion message
+    // Show completion message if the player has answered enough questions
     if (mathViewModel.getQuestionCount() >= 10) {
-        showMessage = true // Set flag to show completion message
+        showMessage = true
+        Log.d("MathGameScreen", "Level completed, total questions: ${mathViewModel.getQuestionCount()}")
     }
 
-    // Show completion dialog if showMessage is true
+    // Display an alert dialog when the level is completed
     if (showMessage) {
-        val scoreToSave = mathViewModel.getTotalScore() // Get the total score
-        val feedbackMessage = when {
+        val scoreToSave = mathViewModel.getTotalScore()
+        Log.d("MathGameScreen", "Final score: $scoreToSave")
+        val totalQuestionsAnswered = mathViewModel.getScore()
+
+        val completedLevelText = stringResource(
+            R.string.level_completed_message,
+            totalQuestionsAnswered,
+        )
+
+        val feedbackText = when {
             scoreToSave <= 49 -> stringResource(R.string.zombie_message, scoreToSave)
             scoreToSave in 50..99 -> stringResource(R.string.witch_message, scoreToSave)
             scoreToSave in 100..149 -> stringResource(R.string.vampire_message, scoreToSave)
@@ -176,46 +195,40 @@ fun MathGameScreen(
             else -> stringResource(R.string.unknown_score_message)
         }
 
-        // Show an AlertDialog for level completion
         AlertDialog(
-            onDismissRequest = { showMessage = false }, // Dismiss dialog on request
+            onDismissRequest = { showMessage = false },
             title = { Text(stringResource(R.string.level_completed_title)) },
             text = {
                 Text(
-                    text = stringResource(
-                        R.string.level_completed_message,
-                        mathViewModel.getScore(),
-                        feedbackMessage
-                    )
+                    text = "$completedLevelText\n$feedbackText"
                 )
-            }, // Dialog content
+            },
             confirmButton = {
                 CustomButton(text = stringResource(R.string.back_to_main), onClick = {
-                    showMessage = false // Close the dialog
-                    scoreViewModel.insertScore(scoreToSave, level?.toInt() ?: 1) // Save score and level
-                    navController.navigate("main") // Navigate back to the main screen
-                    mathViewModel.resetGame() // Reset the game
+                    showMessage = false
+                    scoreViewModel.insertScore(scoreToSave, level?.toInt() ?: 1)
+                    navController.navigate("main")
+                    mathViewModel.resetGame()
                 })
             }
         )
     }
 }
 
-// Function to generate a new math problem based on the level
+// Function to generate a new math problem based on the leve
 private fun generateNewProblem(level: String?, mathViewModel: MathViewModel) {
     when (level) {
-        "1" -> mathViewModel.generate1NewProblem() // Generate problem for level 1
-        "2" -> mathViewModel.generate2NewProblem() // Generate problem for level 2
-        "3" -> mathViewModel.generate3NewProblem() // Generate problem for level 3
+        "1" -> mathViewModel.generate1NewProblem()
+        "2" -> mathViewModel.generate2NewProblem()
+        "3" -> mathViewModel.generate3NewProblem()
         else -> {
-            // Handle unexpected level value
             Log.w("MathGameScreen", "Invalid level: $level. Falling back to level 1.")
             mathViewModel.generate1NewProblem()
         }
     }
 }
 
-// Function to check if the answer is numeric
+// Utility function to check if a string is numeric
 private fun isNumeric(str: String): Boolean {
-    return str.toDoubleOrNull() != null // Check if the string can be converted to a Double
+    return str.toDoubleOrNull() != null
 }
